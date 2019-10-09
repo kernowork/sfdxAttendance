@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Center_Session_Compact_Layout</fullName>
+    <fields>Name</fields>
+    <fields>Program__c</fields>
+    <fields>Hours__c</fields>
+    <fields>Date__c</fields>
+    <fields>Attendees__c</fields>
+    <label>Center Session Compact Layout</label>
+</CompactLayout>

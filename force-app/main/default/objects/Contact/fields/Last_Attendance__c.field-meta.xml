@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Attendance__c</fullName>
+    <description>Date of most recent attendance (includes all Programs)</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Date of most recent attendance (includes all Programs)</inlineHelpText>
+    <label>Last Attendance</label>
+    <summarizedField>Program_Attendance__c.ServiceDate__c</summarizedField>
+    <summaryForeignKey>Program_Attendance__c.Contact__c</summaryForeignKey>
+    <summaryOperation>max</summaryOperation>
+    <type>Summary</type>
+</CustomField>

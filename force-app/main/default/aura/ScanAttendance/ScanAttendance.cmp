@@ -1,0 +1,36 @@
+<aura:component controller="ScanAttendanceController" implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+    <aura:attribute name="barcode" type="String"/>  
+    <aura:attribute name="contact" type="Contact"/>
+    <aura:attribute name="found" type="Boolean" default="false"/>
+    
+    <div>
+        <lightning:card title="Scan Barcode, Search For Contact, and Save Attendance">  
+            <div class="slds-grid slds-grid_align-center">
+                <div class="slds-col slds-size_2-of-3">
+            <lightning:input aura:id="barcode" type="text"
+                     placeholder="Click here before scanning barcode" value = "{!v.barcode}" 
+                     name="barcode"  pattern="^[0-9_ ]*$" maxlength="13"
+                     messageWhenPatternMismatch="Barcode is not valid"/> 
+            </div>
+                </div>
+            <br></br>
+            <lightning:button label="Search For Contact" onclick="{!c.submit}"/>
+       		<br></br><br></br>
+            
+            <aura:if isTrue="{!v.found}">
+                <ui:outputText value ="{!v.contact.FirstName}"/>
+                <ui:outputText value =" "/>
+                <ui:outputText value ="{!v.contact.LastName}"/><br></br>
+                <ui:outputText value ="Year of birth: "/>
+                <ui:outputText value ="{!v.contact.YearOfBirth__c}"/><br></br>
+                <ui:outputText value ="Zip code: "/>
+                <ui:outputText value ="{!v.contact.MailingPostalCode}"/><br></br><br></br>
+                              
+                <lightning:button label="Save Attendance" onclick="{!c.enter}"/>
+                <lightning:button label="Clear" onclick="{!c.clear}"/>
+            </aura:if>
+      </lightning:card>
+        
+    </div>	
+    
+</aura:component>

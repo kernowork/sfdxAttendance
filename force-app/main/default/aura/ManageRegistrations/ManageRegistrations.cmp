@@ -1,0 +1,69 @@
+<aura:component controller="ManageRegistrationsController" implements="force:lightningQuickAction,flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="registrantList" type="List" />
+    <aura:attribute name="numRegs" type="Integer" />
+    <aura:attribute name="months" type="Integer" default="6"/>
+    <aura:attribute name="mobileView" type="boolean" default="true"/>
+    
+    <div class="{!$Browser.formFactor}">
+        <div class="slds-m-around_x-small">                        
+            <div class="slds-grid slds-grid_align-left">
+                <lightning:input aura:id="inputval" type="Integer" name="monthsLook" 
+                                 label="Look back how many months?" 
+                                 value="{!v.months}"/> 
+            </div>
+            <br/>
+            <aura:if isTrue="{!v.mobileView}">
+                <div><br/></div>
+            </aura:if>
+            
+            <div class="slds-clearfix">
+                <div class="slds-clearfix">
+                    <div class="slds-float_left"> 
+                        <button class="slds-button slds-button_brand" 
+                                onclick="{!c.showRegs}">Refresh Look Back List</button>
+                    </div>
+                    <div class="slds-float_right">
+                        <button class="slds-button slds-button_destructive" 
+                                onclick="{!c.inactivateRegistrations}">Inactivate Registrations</button>  
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div>{!v.numRegs} Registered contact(s) without attendance in last {!v.months} month(s).</div>            
+            <br/>
+        </div>
+        
+        <table class="slds-table slds-table-bordered slds-table_striped 
+                      slds-table_cell-buffer slds-table_fixed-layout">
+        	<thead>
+            	<tr class="slds-text-heading_label">
+                	<th scope="col">
+                    	<div class="slds-wrap" title="Registered Contacts Without Attendance">Registered Contacts Without Attendance</div>
+                    </th>
+                    <th scope="col">
+                    	<div class="slds-truncate" title="Inactivate Registration?">Inactivate Registration?</div>
+                    </th>
+                </tr>
+            </thead>
+            
+            <tbody>
+             	<!--Iterate through the list of registrants-->
+                <aura:iteration items="{!v.registrantList}" var="reg">
+                    <tr>
+                        <td>
+                            <div class="slds-truncate" title="{!reg.Contact_Name__c}">{!reg.Contact_Name__c}</div>
+                        </td>
+                        <td>
+                            <ui:inputCheckbox aura:id="checkBox" value="true" text="{!reg.Id}" />
+                        </td>
+                    </tr>
+                    <aura:if isTrue="{!v.mobileView}">
+                        <div><br/></div>
+                    </aura:if>
+                </aura:iteration>
+            </tbody>        
+        </table>
+    </div>
+</aura:component>

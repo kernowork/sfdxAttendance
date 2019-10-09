@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Barcode_Scanned__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Automatically checked by scanning process if attendance record created by scan.  Use in reporting to identify scanned attendance records.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Automatically checked by scanning process if attendance record created by scan.  Use in reporting to identify scanned attendance records.</inlineHelpText>
+    <label>Barcode Scanned</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

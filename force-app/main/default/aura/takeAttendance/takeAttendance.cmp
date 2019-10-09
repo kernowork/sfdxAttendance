@@ -1,0 +1,75 @@
+<aura:component controller="TakeAttendanceController"
+                implements="flexipage:availableForRecordHome,force:lightningQuickAction,force:hasRecordId,force:hasSObjectName" access="global">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <aura:attribute name="sObjectName" type="String" />
+    <aura:attribute name="registrantList" type="List" />
+    <aura:attribute name="sessionDate" type="Date" />
+    <aura:attribute name="mobileView" type="boolean" default="true"/>
+    <aura:attribute name="loaded" type="Boolean" default="false" />
+    
+    <div class="{!$Browser.formFactor}">
+        <!-- use data table from Lightning Design System -->
+        <lightning:card>
+            <aura:if isTrue="{!and(not(empty(v.registrantList)), v.loaded)}">
+                <div class="slds-m-around_x-small">
+                    <div class="slds-grid slds-grid_align-end slds-m-around_x-small">
+                        <button class="slds-button slds-button_brand" onclick="{!c.addSelected}">Save Attendance</button>
+                    </div>
+        
+                    <table class="slds-table slds-table-bordered slds-table_striped 
+                                      slds-table_cell-buffer slds-table_fixed-layout">
+                        <thead>
+                            <tr class="slds-text-heading_label">
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Name">Status</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Name">Registered Contacts</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Select">Phone #</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Select">Attended?</div>
+                                </th>
+                            </tr>
+                        </thead>
+        
+                        <tbody>
+                            <!--Iterate through the list of registrants-->
+                            <aura:iteration items="{!v.registrantList}" var="reg">
+                                <tr>
+                                    <td>
+                                        <div class="slds-truncate" title="{!reg.Status}">{!reg.Status}</div>
+                                    </td>
+                                    <td>
+                                        <div class="slds-truncate" title="{!reg.ContactName}">{!reg.ContactName}</div>
+                                    </td>
+                                    <td>
+                                        <div class="slds-truncate" title="{!reg.ContactPhone}">{!reg.ContactPhone}</div>
+                                    </td>
+                                    <td>
+                                        <lightning:input type="checkbox" aura:id="checkBox" checked="{!reg.CheckboxSetting}"
+                                            value="{!reg.RegistrationId}" />
+                                    </td>
+                                </tr>
+                                <aura:if isTrue="{!v.mobileView}">
+                                    <div><br></br></div>
+                                </aura:if>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+                <br></br>
+                <div class="slds-grid slds-grid_align-end slds-m-around_x-small">
+                    <button class="slds-button slds-button_brand" onclick="{!c.addSelected}">Save Attendance</button>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!and(empty(v.registrantList),v.loaded)}">
+                <div>No registrants found!</div>
+            </aura:if>
+        </lightning:card>
+    </div>
+</aura:component>
