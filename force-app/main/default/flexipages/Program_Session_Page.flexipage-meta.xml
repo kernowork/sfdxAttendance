@@ -119,7 +119,7 @@
         <name>sidebar</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Center Program Session Page</masterLabel>
+    <masterLabel>Program Session Page</masterLabel>
     <sobjectType>Program_Session__c</sobjectType>
     <template>
         <name>flexipage:recordHomeTemplateDesktop</name>

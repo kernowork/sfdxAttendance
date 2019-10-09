@@ -23,24 +23,11 @@
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <componentInstances>
-            <componentInstanceProperties>
-                <name>decorate</name>
-                <value>true</value>
-            </componentInstanceProperties>
-            <componentInstanceProperties>
-                <name>richTextValue</name>
-                <value>&lt;span style=&quot;font-size:12px;&quot;&gt;TIP:&amp;nbsp; Need to permanently delete a registration for a contact who will no longer attend a program?&lt;br /&gt;
-Delete the registration record by clicking the &lt;b&gt;Delete&lt;/b&gt; button.&amp;nbsp; Or delete from the &lt;b&gt;PROGRAMS&lt;/b&gt; tab on the contact or the &lt;b&gt;REGISTRATIONS&lt;/b&gt; tab on the program.&lt;br /&gt;
-Deleting registrations does not delete attendance records.&lt;/span&gt;</value>
-            </componentInstanceProperties>
-            <componentName>flexipage:richText</componentName>
-        </componentInstances>
         <name>sidebar</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>Center Program Registration Page</masterLabel>
-    <sobjectType>Program_Registration__c</sobjectType>
+    <masterLabel>Program Attendance Page</masterLabel>
+    <sobjectType>Program_Attendance__c</sobjectType>
     <template>
         <name>flexipage:recordHomeTemplateDesktop</name>
     </template>
