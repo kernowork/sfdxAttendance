@@ -41,6 +41,10 @@
                 <behavior>Edit</behavior>
                 <field>Instructor2__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Description__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
@@ -143,7 +147,7 @@
     <relatedLists>
         <fields>NAME</fields>
         <fields>Date__c</fields>
-        <fields>Hours__c</fields>
+        <fields>Attendees__c</fields>
         <relatedList>Program_Session__c.Program__c</relatedList>
         <sortField>Date__c</sortField>
         <sortOrder>Desc</sortOrder>
@@ -162,7 +166,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1g000000Fryt</masterLabel>
+        <masterLabel>00hS0000001kgmk</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

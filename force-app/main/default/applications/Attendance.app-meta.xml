@@ -11,6 +11,15 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>Program_Page</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+        <pageOrSobjectType>Program__c</pageOrSobjectType>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
         <comment>Action override updated by Lightning App Builder during activation.</comment>
         <content>Program_Registration_Page</content>
         <formFactor>Large</formFactor>
@@ -27,6 +36,14 @@
         <type>Flexipage</type>
         <pageOrSobjectType>Program_Session__c</pageOrSobjectType>
     </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <content>Attendance_Home_Page</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+        <pageOrSobjectType>standard-home</pageOrSobjectType>
+    </actionOverrides>
     <brand>
         <headerColor>#437E56</headerColor>
         <logo>pawns</logo>
@@ -40,7 +57,9 @@
     <label>Attendance</label>
     <navType>Standard</navType>
     <setupExperience>all</setupExperience>
+    <tabs>standard-home</tabs>
     <tabs>Program__c</tabs>
+    <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
     <tabs>standard-Dashboard</tabs>
     <tabs>standard-report</tabs>

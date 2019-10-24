@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Program__c</fullName>
     <deleteConstraint>Restrict</deleteConstraint>
-    <description>Referenced by Apex logic in TakeAttendance and ManageRegistrations. Auto-populated by Apex or Process Builder.</description>
+    <description>Referenced by Apex logic in TakeAttendance and ManageRegistrations. Auto-populated by Apex or Add Attendee action on Program Session.</description>
     <externalId>false</externalId>
     <label>Program</label>
     <lookupFilter>
@@ -17,7 +17,7 @@
     <referenceTo>Program__c</referenceTo>
     <relationshipLabel>Program Attendance</relationshipLabel>
     <relationshipName>Program_Attendance</relationshipName>
-    <required>false</required>
+    <required>true</required>
     <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>

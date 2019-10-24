@@ -1,0 +1,16 @@
+<aura:component controller="LoadData" implements="flexipage:availableForAllPageTypes" access="global">
+
+    <lightning:card title="Load Sample Data" >
+        <div class="slds-p-around_medium">
+            <br/>
+            <lightning:button variant="neutral" label="Load Contacts (first upload 'MASHPeople.csv' as static resource)" onclick="{!c.submit_contacts}"/>
+            <br/><br/>
+            <lightning:button variant="neutral" label="Load Programs and Registrations (run after loading contacts)" onclick="{!c.submit_programs}"/>
+            <br/><br/>
+            <lightning:button variant="neutral" label="Load Program Sessions (run after loading programs)" onclick="{!c.submit_sessions}"/>
+            <br/><br/>
+            <lightning:button variant="neutral" label="Load Attendance (run after loading sessions)" onclick="{!c.submit_attendance}"/>
+
+        </div>
+    </lightning:card>
+</aura:component>	
