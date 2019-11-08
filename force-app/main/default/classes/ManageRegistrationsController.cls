@@ -7,7 +7,7 @@ public with sharing class ManageRegistrationsController {
         checkRegistrationsReadAccess();
         checkAttendanceReadAccess();
         
-        List<Program_Registration__c> regsToInactivate;
+        List<Program_Registration__c> regsToDelete;
         List<Program_Registration__c> regsCheck;
         
         // This runs whenever the user clicks on the Show List button
@@ -21,7 +21,7 @@ public with sharing class ManageRegistrationsController {
         List<Contact> cons = [SELECT FirstName, LastName, 
                               (SELECT Name, ServiceDate__c FROM Program_Attendance__r  WHERE Program__c= :programID 
                                ORDER BY ServiceDate__c DESC NULLS LAST),
-                              (SELECT Id, Name, Contact__c, Contact_Name__c, Contact_Phone__c, CreatedDate FROM Program_Registrations__r WHERE Program__c=:programID and Inactive__c = false)
+                              (SELECT Id, Name, Contact__c, Contact_Name__c, Contact_Phone__c, CreatedDate FROM Program_Registrations__r WHERE Program__c=:programID)
                               FROM Contact
                               WHERE Id IN
                               (SELECT Contact__c FROM Program_Registration__c WHERE Program__c=:programID) ORDER BY LastName]; 
@@ -29,7 +29,7 @@ public with sharing class ManageRegistrationsController {
         Integer nRegs = cons.size();
         
         if(nRegs > 0)  {      
-            regsToInactivate = new List<Program_Registration__c>();
+            regsToDelete = new List<Program_Registration__c>();
 
             // Loop through the client list
                                 
@@ -49,7 +49,7 @@ public with sharing class ManageRegistrationsController {
                     if(lastAttended < cutoffDate) {
                         //add registration(s) to delete list
                         for(Program_Registration__c r : reg) {
-                            regsToInactivate.add(r);
+                            regsToDelete.add(r);
                         } 
                     }
                 
@@ -58,27 +58,27 @@ public with sharing class ManageRegistrationsController {
                     for(Program_Registration__c r : reg) {
                         // Delete registration if created before the cutoff date
                         if(r.CreatedDate < cutoffDate) {
-                            regsToInactivate.add(r);
+                            regsToDelete.add(r);
                         }
                     }
                 }
                 
             } // End of loop through client list
               
-            List<Id> consToInactivate = getContactsToInactivate(regsToInactivate);
+            List<Id> consToDelete = getContactsToDelete(regsToDelete);
         
-            // get the names of the registrants to be inactivated, for display on component
-            List<Contact> conRegsToInactivate = getContactNamesToInactivate(consToInactivate);      
-            Integer numToInactivate = consToInactivate.size();
-            System.debug(consToInactivate);
+            // get the names of the registrants to be deleted, for display on component
+            List<Contact> conRegsToDelete = getContactNamesToDelete(consToDelete);      
+            Integer numToDelete = consToDelete.size();
+            System.debug(consToDelete);
             
         }
         
-        return regsToInactivate;
+        return regsToDelete;
     }
     
-    public static List<Id> getContactsToInactivate(List<Program_Registration__c> regs) {
-        //loop through registrations to inactivate to get the contact Ids
+    public static List<Id> getContactsToDelete(List<Program_Registration__c> regs) {
+        //loop through registrations to delete to get the contact Ids
         List<Id> cons = new List<Id>();
         for(Program_Registration__c r : regs){
                 cons.add(r.Contact__c);
@@ -86,25 +86,30 @@ public with sharing class ManageRegistrationsController {
         return cons;
     }
     
-    public static List<Contact> getContactNamesToInactivate(List<Id> conRegs) {
+    public static List<Contact> getContactNamesToDelete(List<Id> conRegs) {
         return [SELECT FirstName, LastName FROM Contact WHERE Id in :conRegs];  
     }
     
+
     @AuraEnabled
-    public static boolean inactivateRegs(List<Id> regIDs){
-        // this happens when the user clicks on the Inactivate Registrations button
-        boolean regsUpdated = false;
-        checkRegistrationsUpdateAccess();
-              
+    public static boolean deleteRegs(List<Id> regIDs){
+        // this happens when the user clicks on the Delete Registrations button
+        boolean regsDeleted = false;
+        checkRegistrationsDeleteAccess();
+        List<Program_Registration__c> regsToDelete;
+
         if(regIDs.size() > 0) {           	
-            List<Program_Registration__c> regsToInactivate = [SELECT Id, Inactive__c FROM Program_Registration__c WHERE Id IN :regIDs]; 
-            for(Program_Registration__c r : regsToInactivate) {
-                r.Inactive__c = true;
-            }
-            update regsToInactivate;
-			regsUpdated = true;
+            regsToDelete = [SELECT Id FROM Program_Registration__c WHERE Id IN :regIDs]; 
         }
-        return regsUpdated;
+
+        try {
+            delete regsToDelete;
+            regsDeleted = true;
+        } catch (Exception e) {
+            System.debug(e);
+        }   
+
+        return regsDeleted;
     }
     
     //********************************** CRUD methods ***********************************
@@ -151,25 +156,6 @@ public with sharing class ManageRegistrationsController {
         }
     }
     
-    public static void checkRegistrationsUpdateAccess() {
-        if (!Schema.sObjectType.Program_Registration__c.isUpdateable()) {
-            throw new System.NoAccessException();   
-        }
-        checkRegistrationsFieldUpdateAccess();
-    }
-    
-    public static void checkRegistrationsFieldUpdateAccess() {
-        
-        String [] regAccessFields = new String []   {'Inactive__c'};                                                        
-        Map<String, Schema.SOBjectField> m = Schema.SOBjectType.Program_Registration__c.fields.getMap();
-        System.debug(m);
-        for (String fieldToCheck : regAccessFields) {
-            if (!m.get(fieldToCheck).getDescribe().isUpdateable()) {
-                System.debug('User cannot update Registrations');
-                throw new System.NoAccessException();
-            }
-        }
-    }
     
     public static void checkRegistrationsDeleteAccess() {
         if (!Schema.sObjectType.Program_Registration__c.isDeletable()) {

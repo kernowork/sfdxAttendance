@@ -10,7 +10,7 @@
         helper.getRegistrations(component);
     },
     
-    inactivateRegistrations: function(component, event, helper) {
+    deleteRegistrations: function(component, event, helper) {
         //create array for temporary storage of Ids of checked participants
     	var tempIDs = [];
         
@@ -28,7 +28,7 @@
                     }
                 } 
             }
-            helper.inactivateChecked(component, event, tempIDs);
+            helper.deleteChecked(component, event, tempIDs);
             $A.get('e.force:refreshView').fire();
         }
     },

@@ -59,6 +59,17 @@
     </flexiPageRegions>
     <flexiPageRegions>
         <componentInstances>
+            <componentInstanceProperties>
+                <name>decorate</name>
+                <value>true</value>
+            </componentInstanceProperties>
+            <componentInstanceProperties>
+                <name>richTextValue</name>
+                <value>&lt;p&gt;NOTE:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Deleting registrations does not delete a contact&#39;s attendance history.&lt;/li&gt;&lt;li&gt;To reactivate a contact, create a new registration &lt;/li&gt;&lt;/ul&gt;</value>
+            </componentInstanceProperties>
+            <componentName>flexipage:richText</componentName>
+        </componentInstances>
+        <componentInstances>
             <componentName>ManageRegistrations</componentName>
         </componentInstances>
         <name>Facet-b80915f1-c03f-4bd4-9aaf-850a8e8b6192</name>
@@ -98,7 +109,7 @@
             </componentInstanceProperties>
             <componentInstanceProperties>
                 <name>title</name>
-                <value>Inactivate Registrations</value>
+                <value>Delete Registrations</value>
             </componentInstanceProperties>
             <componentName>flexipage:tab</componentName>
         </componentInstances>

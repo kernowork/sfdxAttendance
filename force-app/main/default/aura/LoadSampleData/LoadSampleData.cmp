@@ -3,7 +3,7 @@
     <lightning:card title="Load Sample Data" >
         <div class="slds-p-around_medium">
             <br/>
-            <lightning:button variant="neutral" label="Load Contacts (first upload 'MASHPeople.csv' as static resource)" onclick="{!c.submit_contacts}"/>
+            <lightning:button variant="neutral" label="Load Contacts (make sure 'MASHPeople.csv' is uploaded as static resource)" onclick="{!c.submit_contacts}"/>
             <br/><br/>
             <lightning:button variant="neutral" label="Load Programs and Registrations (run after loading contacts)" onclick="{!c.submit_programs}"/>
             <br/><br/>

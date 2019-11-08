@@ -132,16 +132,11 @@ public class TakeAttendanceControllerTest {
         for(Program_Registration__c r: regList) {
             regIds.add(r.Id);
         }
-        regList[0].Inactive__c = true; //let one of the registrations be currently inactive
-        update regList[0];
         String sessionDate = '2017-12-31';
         Test.startTest(); 
         TakeAttendanceController.saveSelected(wineClass.Id, regIds, sessionDate);
         List<Program_Attendance__c> result = [SELECT Contact__c FROM Program_Attendance__c];
         System.assertEquals(conList[4].Id, result[4].Contact__c);
-        //test that the inactive regisration is now active
-        Program_Registration__c result1 = [SELECT Status__c FROM Program_Registration__c WHERE Id = :regList[0].Id];
-        System.assertEquals('Active', result1.Status__c);
         Test.stopTest();
     }
       
@@ -155,7 +150,6 @@ public class TakeAttendanceControllerTest {
             regIds.add(regList[i].Id);
         }
         String sessionDate = '2017-12-31';
-        //Date sd = Date.valueOf(classDate);
         
         // save these registrations
         Program_Session__c thisClass = TakeAttendanceController.saveProgramSession(wineClass.Id, sessionDate);
@@ -212,18 +206,6 @@ public class TakeAttendanceControllerTest {
             
             try {
                 TakeAttendanceController.checkRegistrationsFieldReadAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkRegistrationsUpdateAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkRegistrationsFieldUpdateAccess();
                 } catch(Exception e) {
                 System.assert(e.getTypeName().contains('System.NoAccessException'));
             }

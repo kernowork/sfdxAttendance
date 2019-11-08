@@ -148,7 +148,7 @@ public with sharing class LoadData {
     public static void loadSessionAttendance() {
         List<Program_Attendance__c> attendance = new List<Program_Attendance__c>();
         List<Program__c> programs = [SELECT Name, (SELECT Contact__c FROM Program_Registrations__r),
-                                    (SELECT Date__c FROM Program_Sessions__r) FROM Program__c];
+                                    (SELECT Date__c FROM Program_Sessions__r ORDER BY Date__c) FROM Program__c];
         for(Program__c program: programs) {
             List<Program_Registration__c> regs = program.Program_Registrations__r;
             List<Program_Session__c> sessions = program.Program_Sessions__r;

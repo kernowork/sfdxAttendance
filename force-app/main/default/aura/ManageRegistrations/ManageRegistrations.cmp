@@ -26,7 +26,7 @@
                     </div>
                     <div class="slds-float_right">
                         <button class="slds-button slds-button_destructive" 
-                                onclick="{!c.inactivateRegistrations}">Inactivate Registrations</button>  
+                                onclick="{!c.deleteRegistrations}">Delete Registrations</button>  
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     	<div class="slds-wrap" title="Registered Contacts Without Attendance">Registered Contacts Without Attendance</div>
                     </th>
                     <th scope="col">
-                    	<div class="slds-truncate" title="Inactivate Registration?">Inactivate Registration?</div>
+                    	<div class="slds-truncate" title="Delete Registration?">Delete Registration?</div>
                     </th>
                 </tr>
             </thead>

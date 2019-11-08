@@ -41,9 +41,9 @@
         $A.enqueueAction(action); 
     },
     
-	inactivateChecked : function(component, event, tempIDs) {
+	deleteChecked : function(component, event, tempIDs) {
         console.log('tempIDs: ' + tempIDs);
-        var action = component.get("c.inactivateRegs");
+        var action = component.get("c.deleteRegs");
         action.setParams({"regIDs" : tempIDs});
         
         action.setCallback(this, function(response) {
@@ -54,13 +54,13 @@
                 var resultsToast = $A.get("e.force:showToast");
                 if (response.getReturnValue() === true) {
                     resultsToast.setParams({
-                        "title": "Inactivating Registrations",
-                        "message": "Registration records have been inactivated for this program."
+                        "title": "Deleting Registrations",
+                        "message": "Registration records have been deleted for this program."
                     })
                 } else {
                     resultsToast.setParams({
                         "title": "Check Registrations List",
-                        "message": "No registrations inactivated this time."
+                        "message": "No registrations deleted this time."
                     })
                 }
                 
@@ -72,7 +72,7 @@
                 console.log('NO GOOD');
                 var resultsToast = $A.get("e.force:showToast");
                 resultsToast.setParams({
-                    "title": "Inactivating Registrations",
+                    "title": "Deleting Registrations",
                     "message": "Insufficient access privileges for this action."
                 })
                 

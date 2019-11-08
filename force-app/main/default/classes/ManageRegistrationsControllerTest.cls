@@ -8,18 +8,18 @@ private class ManageRegistrationsControllerTest {
         insert pg;       
         Test.startTest();
         List<Program_Registration__c> result = ManageRegistrationsController.showRegistrations(pg.Id, 1);
-        // There should be no registrations to inactivate
+        // There should be no registrations to delete
         System.AssertEquals(null, result);
         Test.stopTest();
     }
-    
-    @isTest static void TestInactivateEmptyList() {
+
+    @isTest static void TestDeleteEmptyList() {
         // create activity with no registrations
         Program__c pg = new Program__c(Name='Wine Tasting');
         insert pg;       
         Test.startTest();
         List<Id> regIds = new List<Id>(); // pass empty list
-        boolean result = ManageRegistrationsController.inactivateRegs(regIds);
+        boolean result = ManageRegistrationsController.deleteRegs(regIds);
         // There are no registrations to delete
         System.AssertEquals(false, result);
         Test.stopTest();
@@ -27,31 +27,29 @@ private class ManageRegistrationsControllerTest {
 
     @isTest static void TestWineClassList() {
         // create an activity with 4 registrants and attendances
-        // Contact 'Client Notcurrent' has no attendance within 30 days and Registration will be inactivated
+        // Contact 'Client Notcurrent' has no attendance within 30 days and Registration will be deleted
         
         Program__c pg = TestAttendanceFactory.createContactsWithAttendances();
 
         Test.startTest();
         List<Program_Registration__c> regs = ManageRegistrationsController.showRegistrations(pg.Id, 1);        
         System.AssertEquals(1, regs.size());
-        List<Id> conIds = ManageRegistrationsController.getContactsToInactivate(regs);
-        List<Contact> conNames = ManageRegistrationsController.getContactNamesToInactivate(conIds);
+        List<Id> conIds = ManageRegistrationsController.getContactsToDelete(regs);
+        List<Contact> conNames = ManageRegistrationsController.getContactNamesToDelete(conIds);
         System.AssertEquals('Notcurrent', conNames[0].LastName); 
         List<Id> regIds = new List<Id>();
         for(Program_Registration__c r : regs) {
             regIds.add(r.Id);
         }
-		ManageRegistrationsController.inactivateRegs(regIds);
-        Program_Registration__c result = [SELECT Status__c FROM Program_Registration__c WHERE Id = :regs[0].id];
-        System.assertEquals('Not active', result.Status__c);
+		ManageRegistrationsController.deleteRegs(regIds);
         
         Test.stopTest();
-        //make sure it doesn't show up on the list now
+        //make sure the registrations no longer show
         regs = ManageRegistrationsController.showRegistrations(pg.Id, 1);  
         System.AssertEquals(0, regs.size());
     }
     
-    @isTest static void TestForceInactivateNoshow() {
+    @isTest static void TestForceDeleteNoshow() {
         System.debug('Testing for no show');
         // create an activity with 4 registrants and attendances
         // set cutoff date in the future so that no registrant has a recent attendance

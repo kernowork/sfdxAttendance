@@ -17,7 +17,7 @@
     <referenceTo>Program__c</referenceTo>
     <relationshipLabel>Program Attendance</relationshipLabel>
     <relationshipName>Program_Attendance</relationshipName>
-    <required>true</required>
+    <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>

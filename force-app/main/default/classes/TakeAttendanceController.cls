@@ -35,8 +35,7 @@ public with sharing class TakeAttendanceController {
             } else {
                 checkBox = false;
             }
-            AttendanceFormWrapper af = new AttendanceFormWrapper(registrations[i].Status__c, registrations[i].Contact_Name__c, registrations[i].Contact_Phone__c,
-                                                   checkBox, registrations[i].Id);
+            AttendanceFormWrapper af = new AttendanceFormWrapper(registrations[i].Contact_Name__c, checkBox, registrations[i].Id);
             attendanceForm.add(af);
             System.debug('form entry ' + af);
         }    
@@ -46,20 +45,14 @@ public with sharing class TakeAttendanceController {
     //inner class for attendance wrapper
     public class AttendanceFormWrapper {
         @AuraEnabled
-        public String Status;
-        @AuraEnabled
         public String ContactName;
-        @AuraEnabled
-        public String ContactPhone;
         @AuraEnabled
         public Boolean CheckboxSetting;
         @AuraEnabled
         public Id RegistrationId;
         
-        public AttendanceFormWrapper(String status, String contactName, String contactPhone, boolean checkboxSetting, Id regId) {
-            this.Status = status;
+        public AttendanceFormWrapper(String contactName, boolean checkboxSetting, Id regId) {
             this.ContactName = contactName;
-            this.ContactPhone = contactPhone;
             this.CheckboxSetting = checkboxSetting;
             this.RegistrationId = regId;
         }
@@ -86,12 +79,10 @@ public with sharing class TakeAttendanceController {
         List<Id> attendanceContacts = getAttendanceContacts(attendances);
         
         //Find registrations which have no attendance for this session
-        List<Integer> noAttendance = new List<Integer>();
         List<String> regsWithNoAttendance = new List<string>();
         for(Integer i=0; i < checkedRegs.size(); i++) {
             if(!listContains(attendanceContacts, registrationContacts[i])) {
                 //this registration needs an attendance record
-                //noAttendance.add(i);
                 regsWithNoAttendance.add(checkedRegs[i].Id);
             } 
         }
@@ -131,8 +122,8 @@ public with sharing class TakeAttendanceController {
         checkRegistrationsReadAccess();
         
         //Get all people registered for this program
-        List<Program_Registration__c> regsList = [SELECT Id, Contact_Name__c, Contact__c, Contact_Phone__c, Status__c FROM Program_Registration__c 
-                                                  WHERE Program__c = :recordId ORDER BY Status__c, Contact_Name__c];
+        List<Program_Registration__c> regsList = [SELECT Id, Contact_Name__c, Contact__c FROM Program_Registration__c 
+                                                  WHERE Program__c = :recordId ORDER BY Contact_Name__c];
         System.debug('Number of regs found: ' + regsList.size());
         return regsList;
         
@@ -143,9 +134,8 @@ public with sharing class TakeAttendanceController {
         
         checkAttendanceReadAccess();
         
-        List<Program_Attendance__c> attendances = [SELECT Id, Contact__c, ServiceDate__c FROM Program_Attendance__c 
-                                           WHERE Program__c =:programId AND
-                                          Program_Session__c = :programSessionId ORDER BY Contact__c];
+        List<Program_Attendance__c> attendances = [SELECT Id, Contact__c FROM Program_Attendance__c 
+                                           WHERE Program_Session__c = :programSessionId ORDER BY Contact__c];
         return attendances;
         
     } // end #6
@@ -199,7 +189,6 @@ public with sharing class TakeAttendanceController {
     public static void saveAttendances(Id programId, List<String> regIds, Program_Session__c sd) {
         
         checkRegistrationsReadAccess();
-        checkRegistrationsUpdateAccess();
         checkAttendanceCreateAccess();
         checkAttendanceUpdateAccess();
         
@@ -210,10 +199,9 @@ public with sharing class TakeAttendanceController {
         
         //Create attendance record for each registration
         for(Program_Registration__c reg : registrations) {
-            reg.Inactive__c = false; // with an attendance, this registration is no longer inactive
             Program_Attendance__c att = new Program_Attendance__c();
             att.Program_Session__c = sd.Id; 	//master-detail - shows program session by name
-            att.Program__c = programId; 	//master-detail - shows class by name
+            att.Program__c = programId; 	//lookup - shows class by name
             att.Contact__c = reg.Contact__c; 	//master-detail - shows contact by name
             att.ServiceDate__c = sd.Date__c;
             attendances.add(att);
@@ -221,7 +209,6 @@ public with sharing class TakeAttendanceController {
         
         System.debug(attendances);
         insert attendances;
-        update registrations;
                
     } // end #11
       
@@ -255,25 +242,6 @@ public with sharing class TakeAttendanceController {
         }
     }
     
-    public static void checkRegistrationsUpdateAccess() {
-        if (!Schema.sObjectType.Program_Registration__c.isUpdateable()) {
-            throw new System.NoAccessException();   
-        }
-        checkRegistrationsFieldUpdateAccess();
-    }
-    
-    public static void checkRegistrationsFieldUpdateAccess() {
-        
-        String [] regAccessFields = new String []   {'Inactive__c'};                                                        
-        Map<String, Schema.SOBjectField> m = Schema.SOBjectType.Program_Registration__c.fields.getMap();
-        System.debug(m);
-        for (String fieldToCheck : regAccessFields) {
-            if (!m.get(fieldToCheck).getDescribe().isUpdateable()) {
-                System.debug('User cannot update Registrations');
-                throw new System.NoAccessException();
-            }
-        }
-    }
     
     public static void checkRegistrationsDeleteAccess() {
         if (!Schema.sObjectType.Program_Registration__c.isDeletable()) {

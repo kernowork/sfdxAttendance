@@ -23,13 +23,7 @@
                         <thead>
                             <tr class="slds-text-heading_label">
                                 <th scope="col">
-                                    <div class="slds-truncate" title="Name">Status</div>
-                                </th>
-                                <th scope="col">
                                     <div class="slds-truncate" title="Name">Registered Contacts</div>
-                                </th>
-                                <th scope="col">
-                                    <div class="slds-truncate" title="Select">Phone #</div>
                                 </th>
                                 <th scope="col">
                                     <div class="slds-truncate" title="Select">Attended?</div>
@@ -42,13 +36,7 @@
                             <aura:iteration items="{!v.registrantList}" var="reg">
                                 <tr>
                                     <td>
-                                        <div class="slds-truncate" title="{!reg.Status}">{!reg.Status}</div>
-                                    </td>
-                                    <td>
                                         <div class="slds-truncate" title="{!reg.ContactName}">{!reg.ContactName}</div>
-                                    </td>
-                                    <td>
-                                        <div class="slds-truncate" title="{!reg.ContactPhone}">{!reg.ContactPhone}</div>
                                     </td>
                                     <td>
                                         <lightning:input type="checkbox" aura:id="checkBox" checked="{!reg.CheckboxSetting}"
