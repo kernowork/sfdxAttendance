@@ -24,7 +24,7 @@
         <apexClass>TestAttendanceFactory</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Permissions for objects and other items related to taking attendance.</description>
+    <description>Permissions for objects and other items related to taking attendance...</description>
     <fieldPermissions>
         <editable>false</editable>
         <field>Contact.Attendance_Count__c</field>
@@ -88,16 +88,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Program_Registration__c.Contact_Phone__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Program_Registration__c.Inactive__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Program_Registration__c.Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
