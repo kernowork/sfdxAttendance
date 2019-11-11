@@ -1,6 +1,6 @@
 # sfdxAttendance
 Custom objects, aura components and lightning pages. Take attendance for classes, activities etc.
-Work still in progress.
+Work still in progress. Commits *usually* follow a successful push to a scratch org...but there may be exceptions.
 
 Assign "Attendance" permission set to access the app.
 

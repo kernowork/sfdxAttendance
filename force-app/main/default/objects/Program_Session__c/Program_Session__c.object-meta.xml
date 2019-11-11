@@ -41,7 +41,7 @@
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
-    <compactLayoutAssignment>Center_Session_Compact_Layout</compactLayoutAssignment>
+    <compactLayoutAssignment>Session_Compact_Layout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Junction object connecting Program with Attendee</description>
     <enableActivities>false</enableActivities>

@@ -41,7 +41,7 @@
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
-    <compactLayoutAssignment>Center_Program_Attendance_Compact_Layout</compactLayoutAssignment>
+    <compactLayoutAssignment>Attendance_Compact_Layout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Contact who attends a specific Session of a Program. 
 Junction object connecting Contact with Session.</description>

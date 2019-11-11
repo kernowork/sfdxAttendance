@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>Program</label>
     <referenceTo>Program__c</referenceTo>
-    <relationshipLabel>Program Sessions</relationshipLabel>
+    <relationshipLabel>Program Sessions </relationshipLabel>
     <relationshipName>Program_Sessions</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

@@ -41,7 +41,7 @@
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
-    <compactLayoutAssignment>Center_Registration_Compact_Layout</compactLayoutAssignment>
+    <compactLayoutAssignment>Registration_Compact_Layout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Junction object connecting Programs with Contacts</description>
     <enableActivities>false</enableActivities>
@@ -62,12 +62,9 @@
     <pluralLabel>Program Registrations</pluralLabel>
     <searchLayouts>
         <customTabListAdditionalFields>Contact_Name__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>Contact_Name__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
         <searchResultsAdditionalFields>Contact_Name__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Program__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>

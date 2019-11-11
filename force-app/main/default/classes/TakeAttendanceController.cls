@@ -231,7 +231,7 @@ public with sharing class TakeAttendanceController {
     
     public static void checkRegistrationsFieldReadAccess() {
         
-        String [] regAccessFields = new String []  {'Id','Contact_Name__c','Contact__c', 'Contact_Phone__c', 'Status__c'};                                                        
+        String [] regAccessFields = new String []  {'Id','Contact_Name__c','Contact__c', 'Contact_Phone__c'};                                                        
         Map<String, Schema.SOBjectField> m = Schema.SOBjectType.Program_Registration__c.fields.getMap();
         System.debug(m);
         for (String fieldToCheck : regAccessFields) {
