@@ -1,4 +1,4 @@
-<design:component label="Scan Attendance">
+<design:component label="Manage Registrations">
     <design:supportedFormFactors>
         <design:supportedFormFactor type="Large"/>
         <design:supportedFormFactor type="Small"/>

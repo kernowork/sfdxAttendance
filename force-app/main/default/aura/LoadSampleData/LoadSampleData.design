@@ -1,3 +1,6 @@
-<design:component >
-
+<design:component label="Load Sample Data">
+    <design:supportedFormFactors>
+        <design:supportedFormFactor type="Large"/>
+        <design:supportedFormFactor type="Small"/>
+    </design:supportedFormFactors>
 </design:component>
