@@ -56,7 +56,6 @@
                             <div class="slds-truncate" title="{!reg.Contact_Name__c}">{!reg.Contact_Name__c}</div>
                         </td>
                         <td>
-                            <!-- <ui:inputCheckbox aura:id="checkBox" value="true" text="{!reg.Id}" /> -->
                             <lightning:input type="checkbox" aura:id="checkBox" checked="true"
                                             value="{!reg.Id}" />
                         </td>

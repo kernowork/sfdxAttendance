@@ -1,0 +1,68 @@
+<aura:component controller="ProgramUtilities" implements="flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="dates" type="Date[]" />
+    <aura:attribute name="selectedDate" type="Date" />
+    <aura:attribute name="programList" type="List" />
+    <aura:attribute name="loaded" type="Boolean" default="false" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <lightning:card title="Setup Class Sessions For Today">
+
+        <aura:if isTrue="{!not(v.loaded)}">
+            <div class="slds-grid slds-m-around_x-small">
+                <button class="slds-button slds-button_brand" onclick="{!c.getProgramList}">Get List</button>
+            </div>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.loaded}">
+            <div class="slds-grid slds-m-around_x-small">
+                <button class="slds-button slds-button_brand" onclick="{!c.doInit}">Start Over</button>
+            </div>
+        </aura:if>
+
+
+        <aura:if isTrue="{!(not(empty(v.programList)))}">
+            <div class="slds-m-around_x-small">
+                <div class="slds-grid slds-grid_align-end slds-m-around_x-small">
+                    <button class="slds-button slds-button_brand" onclick="{!c.addSelected}">Add Sessions</button>
+                </div>
+
+                <table class="slds-table slds-table-bordered slds-table_striped 
+                                          slds-table_cell-buffer slds-table_fixed-layout">
+                    <thead>
+                        <tr class="slds-text-heading_label">
+                            <th scope="col" style="width: 60% ">
+                                <div class="slds-truncate" title="Name">Program</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Session">Session</div>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!--Iterate through the list of programs-->
+                        <aura:iteration items="{!v.programList}" var="prog">
+                            <tr>
+                                <td>
+                                    <div class="slds-truncate" title="{!prog.ProgramName}">{!prog.ProgramName}</div>
+                                </td>
+                                <td>
+                                    <lightning:input type="checkbox" aura:id="checkBox0" checked="{!prog.Checked[0]}" value="{!prog.ProgramId}" disabled="{!prog.Disabled[0]}"/>
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </div>
+            <br></br>
+            <div class="slds-grid slds-grid_align-end slds-m-around_x-small">
+                <button class="slds-button slds-button_brand" onclick="{!c.addSelected}">Add Sessions</button>
+            </div>
+        </aura:if>
+        <aura:if isTrue="{!and(empty(v.programList),v.loaded)}">
+            <div>No programs found!</div>
+        </aura:if>
+
+    </lightning:card>
+</aura:component>
