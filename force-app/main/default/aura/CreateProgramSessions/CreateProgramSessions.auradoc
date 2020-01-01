@@ -1,5 +1,9 @@
 <aura:documentation>
-	<aura:description>Documentation</aura:description>
+	<aura:description>
+		Create program session records for upcoming weeks.
+		 Weeks are displayed Sunday-Saturday and are referenced by the Sunday date,
+		 i.e., week-beginning
+	</aura:description>
 	<aura:example name="ExampleName" ref="exampleComponentName" label="Label">
 		Example Description
 	</aura:example>
