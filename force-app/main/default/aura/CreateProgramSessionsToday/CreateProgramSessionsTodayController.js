@@ -47,7 +47,9 @@
             }
 
             console.log(tempIDs);
-            helper.saveSessions(component, event, tempIDs, 1);
+            if(tempIDs.length > 0) {
+                helper.saveSessions(component, event, tempIDs, 1);
+            }
         }
         console.log('getAllId is null');
 

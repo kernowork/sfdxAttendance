@@ -13,7 +13,7 @@ public with sharing class ProgramUtilities {
         checkProgramReadAccess();
         checkProgramSessionReadAccess();
 
-        List<Program__c> programs = [SELECT Name, Days__c, (SELECT Id, Date__c FROM Program_Sessions__r WHERE Date__c >= :date.today()) 
+        List<Program__c> programs = [SELECT Name, Days__c, (SELECT Id, Date__c FROM Program_Sessions__r WHERE Date__c = :date.today()) 
         FROM Program__c WHERE Active__c = true ORDER BY Name];
         Integer today = getWeekdayFromDate(date.today());
         Map<Integer, String> weekdayMap = getWeekdayMap();

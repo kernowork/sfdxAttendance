@@ -51,7 +51,9 @@
                 }
 
                 console.log(tempIDs);
-                helper.saveSessions(component, event, tempIDs, n);
+                if(tempIDs.length > 0) {
+                    helper.saveSessions(component, event, tempIDs, n);
+                }
             }
         }
     },
