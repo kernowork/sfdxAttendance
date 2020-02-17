@@ -1,16 +1,6 @@
 public with sharing class TakeAttendanceController {
- 
-    //****** #1. get the session date for the class to be edited (to populate the default in date picker)   
-    @AuraEnabled
-    public static Date getProgramSessionDate(Id sd) {
-        
-        checkProgramSessionReadAccess();
-        Program_Session__c session = [SELECT Date__c FROM Program_Session__c WHERE Id = :sd];
-        return session.Date__c;
-        
-    } // end #1
-    
-    //****** #2. get the Program Session Attendance to be edited
+  
+    //****** #1. get the Program Session Attendance to be edited
     @AuraEnabled
     public static List<AttendanceFormWrapper> getSessionAttendanceForEdit(Id sd) {
         
@@ -40,7 +30,7 @@ public with sharing class TakeAttendanceController {
             System.debug('form entry ' + af);
         }    
         return attendanceForm;
-    } // end #2
+    } // end #1
     
     //inner class for attendance wrapper
     public class AttendanceFormWrapper {
@@ -59,13 +49,16 @@ public with sharing class TakeAttendanceController {
     }  // end AttendanceFormWrapper  
 
 
-    //****** #3. update the Attendance records for the Program Session being edited
+    //****** #2. update the Attendance records for the Program Session being edited
     @AuraEnabled
-    public static void saveEditedAttendance(Id sd, List<String> regIds, String sessionDate) {  
-        
-        checkRegistrationsReadAccess();
-        checkAttendanceDeleteAccess();
-        
+    public static void saveEditedAttendance(Id sd, List<String> regIds) {  
+        Schema.DescribeSObjectResult dsr;
+        String [] accessFields;
+
+        dsr = Program_Registration__c.sObjectType.getDescribe();
+        accessFields = new String []  {'Id','Contact_Name__c','Contact__c', 'Contact_Phone__c'}; 
+        CrudMethods.checkFieldReadAccess(dsr, accessFields);
+        CrudMethods.checkDeleteAccess('Program_Attendance__c');
         
         Program_Session__c programSession = getProgramSession(sd); //which class session is this?
         List<Program_Attendance__c> attendances = getAttendances(programSession.Program__c, sd);  //get attendances for session
@@ -99,27 +92,32 @@ public with sharing class TakeAttendanceController {
             } 
         }  
         //Delete the unwanted attendance records (names unchecked on edit)
-        delete attendancesToDelete;
-        programSession.Date__c = Date.valueOf(sessionDate);
-        update programSession;
+        try {
+            delete attendancesToDelete;
+        } catch (DmlException e) {
+            System.debug(e);
+        }   
+
         
-    } // end #3
+    } // end #2
     
-    //****** #4. get required fields from the Program Session record being edited
+    //****** #3. get required fields from the Program Session record being edited
     public static Program_Session__c getProgramSession (Id sd) {
-        
-        checkProgramSessionReadAccess();
+        Schema.DescribeSObjectResult dsr = Program_Session__c.sObjectType.getDescribe();
+        String [] accessFields = new String [] {'Id','Program__c', 'Date__c'};  
+        CrudMethods.checkFieldReadAccess(dsr, accessFields);
         
         Program_Session__c sessionToEdit = [SELECT Id, Program__c, Date__c FROM Program_Session__c 
                                      WHERE Id = :sd];
         return sessionToEdit;  
         
-    } // end #4 
+    } // end #3
     
-    //****** #5. get registrations for the given Program
+    //****** #4. get registrations for the given Program
     public static List<Program_Registration__c> getRegistrations(Id recordId) {
-        
-        checkRegistrationsReadAccess();
+        Schema.DescribeSObjectResult dsr = Program_Registration__c.sObjectType.getDescribe();
+        String [] accessFields = new String [] {'Id','Contact_Name__c','Contact__c', 'Contact_Phone__c'};
+        CrudMethods.checkFieldReadAccess(dsr, accessFields);
         
         //Get all people registered for this program
         List<Program_Registration__c> regsList = [SELECT Id, Contact_Name__c, Contact__c FROM Program_Registration__c 
@@ -127,70 +125,49 @@ public with sharing class TakeAttendanceController {
         System.debug('Number of regs found: ' + regsList.size());
         return regsList;
         
-    } // end #5
+    } // end #4
   
-    //****** #6. get the Attendance records entered for the Program Session being edited
+    //****** #5. get the Attendance records entered for the Program Session being edited
     public static List<Program_Attendance__c> getAttendances(Id programId, Id programSessionId) { 
-        
-        checkAttendanceReadAccess();
+        Schema.DescribeSObjectResult dsr = Program_Attendance__c.sObjectType.getDescribe();
+        String [] accessFields = new String [] {'Id','Program_Session__c','Contact__c','ServiceDate__c'}; 
+        CrudMethods.checkFieldReadAccess(dsr, accessFields);
         
         List<Program_Attendance__c> attendances = [SELECT Id, Contact__c FROM Program_Attendance__c 
                                            WHERE Program_Session__c = :programSessionId ORDER BY Contact__c];
         return attendances;
         
-    } // end #6
+    } // end #5
     
-    //****** #7. get the Contacts associated with each Attendance record
+    //****** #6. get the Contacts associated with each Attendance record
     public static List<id> getAttendanceContacts(List<Program_Attendance__c> attendances) {
         List<Id> attendees = new List<Id>();
         for(Program_Attendance__c att : attendances) {
             attendees.add(att.Contact__c);
         }
         return attendees;
-    } // end #7
+    } // end #6
  
-    //****** #8. get the Contacts associated with each Registration record
+    //****** #7. get the Contacts associated with each Registration record
     public static List<id> getRegistrationContacts(List<Program_Registration__c> regs) {
         List<Id> registrations = new List<Id>();
         for(Program_Registration__c r : regs) {
             registrations.add(r.Contact__c);
         }
         return registrations;
-    } // end #8
-    
-    //****** #9. save new Program Session record and associated Attendance records
-    //called when sObject is Program__c
-    public static void saveSelected(Id recordId, List<String> regIds, String sessionDate) {
-        
-        Program_Session__c sd = saveProgramSession(recordId, sessionDate); 
-        saveAttendances(recordId, regIds, sd); 
-        
-    } // end #9
-    
-        //****** #10. create the Program Session record and return the Id to pass to Attendances
-    public static Program_Session__c saveProgramSession(Id recordId, String sessionDate) {
-        
-        checkProgramSessionCreateAccess();      
-        checkProgramSessionUpdateAccess();
-            
-        Program_Session__c sd = new Program_Session__c();
-                
-        //dates like to be passed from JS as strings!!
-        sd.Date__c = Date.valueOf(sessionDate);
-        sd.Program__c = recordId;
-        
-        upsert sd;
-        return sd;  
-        
-    } // end #10
+    } // end #7
     
     
-    //****** #11. save attendance records for checked registrations
+    
+    //****** #8. save attendance records for checked registrations
     public static void saveAttendances(Id programId, List<String> regIds, Program_Session__c sd) {
-        
-        checkRegistrationsReadAccess();
-        checkAttendanceCreateAccess();
-        checkAttendanceUpdateAccess();
+        Schema.DescribeSObjectResult dsr = Program_Registration__c.sObjectType.getDescribe();
+        String [] accessFields = new String [] {'Id','Contact_Name__c','Contact__c', 'Contact_Phone__c'};
+        CrudMethods.checkFieldReadAccess(dsr, accessFields);
+
+        dsr = Program_Attendance__c.sObjectType.getDescribe();
+        accessFields = new String [] {'Program__c','ServiceDate__c'}; 
+        CrudMethods.checkFieldUpdateAccess(dsr, accessFields);
         
         //Get contact name for each registration (required field for Attendance record)
         List<Program_Registration__c> registrations = [SELECT Id, Contact__c FROM Program_Registration__c 
@@ -207,10 +184,19 @@ public with sharing class TakeAttendanceController {
             attendances.add(att);
         }
         
-        System.debug(attendances);
-        insert attendances;
+        try {
+            insert attendances;
+        } catch (DmlException e) {
+            System.debug(e);
+        }
+
+        try {
+            update registrations;
+        } catch (DmlException e) {
+            System.debug(e);
+        }
                
-    } // end #11
+    } // end #8
       
     
     //useful method!
@@ -218,133 +204,6 @@ public with sharing class TakeAttendanceController {
         return (new Set<Object>(source)).contains(target);
     } 
 
-    //************************CRUD methods************************************
-    
- 	public static void checkRegistrationsReadAccess() {
-        
-        if (!Schema.sObjectType.Program_Registration__c.isAccessible()) {
-            throw new System.NoAccessException();
-        }
-        
-        checkRegistrationsFieldReadAccess();
-    }
-    
-    public static void checkRegistrationsFieldReadAccess() {
-        
-        String [] regAccessFields = new String []  {'Id','Contact_Name__c','Contact__c', 'Contact_Phone__c'};                                                        
-        Map<String, Schema.SOBjectField> m = Schema.SOBjectType.Program_Registration__c.fields.getMap();
-        System.debug(m);
-        for (String fieldToCheck : regAccessFields) {
-            if (!m.get(fieldToCheck).getDescribe().isAccessible()) {
-                System.debug('User cannot read Registrations');
-                throw new System.NoAccessException();
-            }
-        }
-    }
-    
-    
-    public static void checkRegistrationsDeleteAccess() {
-        if (!Schema.sObjectType.Program_Registration__c.isDeletable()) {
-            throw new System.NoAccessException();   
-        }
-    }
-    
-    public static void checkProgramSessionReadAccess() {
-        
-        if (!Schema.sObjectType.Program_Session__c.isAccessible()) {
-            throw new System.NoAccessException();
-        }
-        
-        checkProgramSessionFieldReadAccess();
-    }
-        
-	public static void checkProgramSessionFieldReadAccess() {
-        
-        String [] psAccessFields = new String []  {'Id','Program__c', 'Date__c'};                                                
-        Map<String, Schema.SOBjectField> m = Schema.SOBjectType.Program_Session__c.fields.getMap();
-        for (String fieldToCheck : psAccessFields) {
-            if (!m.get(fieldToCheck).getDescribe().isAccessible()) {
-                throw new System.NoAccessException();
-            }
-        }
-    }
-    
-    public static void checkProgramSessionCreateAccess() {
-        if (!Schema.sObjectType.Program_Session__c.isCreateable()) {
-         	 throw new System.NoAccessException();  
-        }
-    }
-    
-    public static void checkProgramSessionUpdateAccess() {
-        
-        if (!Schema.sObjectType.Program_Session__c.isUpdateable()) {
-         	 throw new System.NoAccessException();  
-        }
-        checkProgramSessionFieldUpdateAccess();
-    }
-    
-    public static void checkProgramSessionFieldUpdateAccess() {
-        
-       // String [] classAccessFields = new String [] {'Date__c', 'Program__c'};
-        String [] programSessionAccessFields = new String [] {'Date__c'};
-        Map<String, Schema.SObjectField> m = Schema.SObjectType.Program_Session__c.fields.getMap();
-		for (String fieldToCheck : programSessionAccessFields) {
-            if (!m.get(fieldToCheck).getDescribe().isUpdateable()) {
-                throw new System.NoAccessException();
-            }
-        }    
-    }
-    
-    public static void checkAttendanceCreateAccess() {      
-        if (!Schema.sObjectType.Program_Attendance__c.isCreateable()) {
-            throw new System.NoAccessException();   
-        }
-    }
-    
-    public static void checkAttendanceReadAccess() {
-        
-        if (!Schema.sObjectType.Program_Attendance__c.isAccessible()) {
-            throw new System.NoAccessException();
-        }       
-        checkAttendanceFieldReadAccess();
-    }
-    
-	public static void checkAttendanceFieldReadAccess() {   
-        
-        String [] attAccessFields = new String []  {'Id','Program_Session__c','Contact__c','ServiceDate__c'};                                                
-        Map<String, Schema.SOBjectField> mm = Schema.SOBjectType.Program_Attendance__c.fields.getMap();
-        for (String fieldToCheck : attAccessFields) {
-            if (!mm.get(fieldToCheck).getDescribe().isAccessible()) {
-                throw new System.NoAccessException();
-            }
-        }
-    }
-    
-    public static void checkAttendanceUpdateAccess() {
-        
-        if (!Schema.sObjectType.Program_Attendance__c.isUpdateable()) {
-         	 throw new System.NoAccessException();  
-        }
-        checkAttendanceFieldUpdateAccess();
-    }
-      
-    public static void checkAttendanceFieldUpdateAccess() {
-        
-        String [] attAccessFields = new String []  {'Program__c','ServiceDate__c'};                                                
-        Map<String, Schema.SOBjectField> mm = Schema.SOBjectType.Program_Attendance__c.fields.getMap();
-        for (String fieldToCheck : attAccessFields) {
-            if (!mm.get(fieldToCheck).getDescribe().isUpdateable()) {
-                System.debug('Not updateable' + fieldToCheck);
-                throw new System.NoAccessException();
-            }
-        }
-    }
-    
-    public static void checkAttendanceDeleteAccess() {
-        if (!Schema.sObjectType.Program_Attendance__c.isDeletable()) {
-            throw new System.NoAccessException();   
-        }
-    }
-    
+   
     
 }

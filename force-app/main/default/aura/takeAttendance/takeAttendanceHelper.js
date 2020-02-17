@@ -5,33 +5,18 @@
             component.set("v.mobileView", false);
         }
     },
-    
-    
-    //****** get the date of the session to be edited
-    getProgramSessionDate : function(component, event) {
-    	var action = component.get("c.getProgramSessionDate");
-    	action.setParams({"sd": component.get("v.recordId")});
-		action.setCallback(this, function(actionResult) {
-    		var state = actionResult.getState();
-    		if(state === "SUCCESS") {
-        		console.log('Found something' + actionResult.getReturnValue());            
-        		component.set("v.sessionDate", actionResult.getReturnValue());
-    		} else {
-        		console.log('NO GOOD!');
-                var resultsToast = $A.get("e.force:showToast");
-                resultsToast.setParams({
-                    "title": "Looking up Session",
-                    "message": "Insufficient access privileges for this action."
-                })
-                
-                resultsToast.fire();
-                $A.get("e.force:closeQuickAction").fire();
-    		}
-		});
 
-		$A.enqueueAction(action);      
-	},
-
+    showHideSpinner : function(component) {
+        var showValue = component.get('v.showSpinner');
+        if(showValue) {
+            var spinner = component.find("spinner");
+        	$A.util.removeClass(spinner, "slds-hide");
+        } else {
+            var spinner = component.find("spinner");
+        	$A.util.addClass(spinner, "slds-hide");
+        }
+    },
+    
     
     //****** get the Program and Registrants of the Session Date to be edited
     getSessionForEdit : function(component, event) {
@@ -64,8 +49,7 @@
         var action = component.get("c.saveEditedAttendance");
         action.setParams({
             "sd": component.get("v.recordId"),
-            "regIds": tempIDs,
-            "sessionDate" : component.get("v.sessionDate")
+            "regIds": tempIDs 
         });
         
         action.setCallback(this, function(response) {
@@ -79,10 +63,6 @@
                     "title": "Saving/updating Attendances",
                     "message": "Attendance records have been saved/updated for this session."
                 })
-                
-                resultsToast.fire();               
-                $A.get('e.force:closeQuickAction').fire();
-                
             } else {
                 console.log('NO GOOD');
                 var resultsToast = $A.get("e.force:showToast");
@@ -90,22 +70,14 @@
                     "title": "Saving/updating Attendances",
                     "message": "Insufficient access privileges for this action."
                 })
-                
-                resultsToast.fire();
-                $A.get("e.force:closeQuickAction").fire();
             }
         });
         $A.enqueueAction(action);
+
+        component.set("v.showSpinner", false);
+        resultsToast.fire();
+        $A.get("e.force:closeQuickAction").fire();
     },
     
-    redirect: function(navId) {
-        var navEvt = $A.get("e.force:navigateToSObject");
-        console.log('Attempting to navigate to: ' + navId);
-        navEvt.setParams({
-            "recordId" : navId
-        });
-        navEvt.fire();
-        $A.get('e.force:refreshView').fire();
-    },
     
 })

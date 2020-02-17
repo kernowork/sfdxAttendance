@@ -1,14 +1,5 @@
 @isTest
 public class TakeAttendanceControllerTest {
-       
-    @isTest static void testGetProgramSessionDateEdit() {
-        Program__c wineClass = makeClass();
-        Program_Session__c testSession = makeSession(wineClass);
-        Test.startTest();
-        Date result = TakeAttendanceController.getProgramSessionDate(testSession.id);
-        System.assertEquals(date.today(), result);
-        Test.stopTest();
-    }
 
     @isTest static void TestGetRegistrations() {
         
@@ -77,13 +68,13 @@ public class TakeAttendanceControllerTest {
         for (Integer i = 0; i<3; i++) {
             regIds.add(regList[i].Id);
         }
-        String sessionDate = '2017-12-31';
+        Program_Session__c session = new Program_Session__c(Program__c=wineClass.Id, Date__c=date.newInstance(2017,12,31));
+        insert session;
         
         // save these registrations
-        Program_Session__c thisClass = TakeAttendanceController.saveProgramSession(wineClass.Id, sessionDate);
-        TakeAttendanceController.saveAttendances(wineClass.Id, regIds, thisClass);
+        TakeAttendanceController.saveAttendances(wineClass.Id, regIds, session);
         test.startTest();
-        List<TakeAttendanceController.AttendanceFormWrapper> result = TakeAttendanceController.getSessionAttendanceForEdit(thisClass.Id);
+        List<TakeAttendanceController.AttendanceFormWrapper> result = TakeAttendanceController.getSessionAttendanceForEdit(session.Id);
         List<Boolean> checked = new List<Boolean>();
         for(TakeAttendanceController.AttendanceFormWrapper r : result) {
             checked.add(r.CheckboxSetting);
@@ -94,17 +85,6 @@ public class TakeAttendanceControllerTest {
         System.AssertEquals(false, checked[3]);
         System.AssertEquals(false, checked[4]);                  
         test.stopTest();
-    }
-    
-    @isTest static void TestSaveProgramSession() {
-        
-        Program__c wineClass = makeClass();
-        String sessionDate = '2017-12-31';
-        Test.startTest();
-        TakeAttendanceController.saveProgramSession(wineClass.Id, sessionDate);
-        List<Program_Session__c> result = [SELECT Program__c FROM Program_Session__c];
-        System.assertEquals(wineClass.Id, result[0].Program__c);
-        Test.stopTest();
     }
     
     @isTest static void TestSaveAttendances() {
@@ -124,23 +104,6 @@ public class TakeAttendanceControllerTest {
         Test.stopTest();
     }
     
-    @isTest static void testSaveSelected() {
-        Program__c wineClass = makeClass();
-        List<Contact> conList = makeContacts();
-        List<Program_Registration__c> regList = makeRegistrations(conList, wineClass);
-        List<String> regIds = new List<String>();
-        for(Program_Registration__c r: regList) {
-            regIds.add(r.Id);
-        }
-        String sessionDate = '2017-12-31';
-        Test.startTest(); 
-        TakeAttendanceController.saveSelected(wineClass.Id, regIds, sessionDate);
-        List<Program_Attendance__c> result = [SELECT Contact__c FROM Program_Attendance__c];
-        System.assertEquals(conList[4].Id, result[4].Contact__c);
-        Test.stopTest();
-    }
-      
-    
     @isTest static void testSaveEditedAttendanceEdit() {
         Program__c wineClass = makeClass();
         List<Contact> conList = makeContacts();
@@ -149,11 +112,11 @@ public class TakeAttendanceControllerTest {
         for (Integer i = 0; i<3; i++) {
             regIds.add(regList[i].Id);
         }
-        String sessionDate = '2017-12-31';
+        Program_Session__c session = new Program_Session__c(Program__c=wineClass.Id, Date__c=date.newInstance(2017,12,31));
+        insert session;
         
         // save these registrations
-        Program_Session__c thisClass = TakeAttendanceController.saveProgramSession(wineClass.Id, sessionDate);
-        TakeAttendanceController.saveAttendances(wineClass.Id, regIds, thisClass);
+         TakeAttendanceController.saveAttendances(wineClass.Id, regIds, session);
         // then make a new list: 0 and 1 will be deleted, 2 remains, 3 and 4 will be added
         regIds = new List<String>();
         for (Integer i = 2; i<5; i++) {
@@ -161,11 +124,8 @@ public class TakeAttendanceControllerTest {
         }
         
         Test.startTest();      
-        Date sd = Date.valueOf(TakeAttendanceController.getProgramSessionDate(thisClass.Id));
-        sessionDate = sd.year() + '-' + sd.month() + '-' + sd.day();
-        System.debug(sessionDate);
-        TakeAttendanceController.saveEditedAttendance(thisClass.id, regIds, sessionDate);
-        List<TakeAttendanceController.AttendanceFormWrapper> checkBoxes = TakeAttendanceController.getSessionAttendanceForEdit(thisClass.id);
+        TakeAttendanceController.saveEditedAttendance(session.id, regIds);
+        List<TakeAttendanceController.AttendanceFormWrapper> checkBoxes = TakeAttendanceController.getSessionAttendanceForEdit(session.id);
         List<Boolean> checked = new List<Boolean>();
         for (Integer i=0; i<5; i++) {
             checked.add(checkBoxes[i].CheckboxSetting);
@@ -181,110 +141,7 @@ public class TakeAttendanceControllerTest {
         Test.stopTest();
     }
     
-    @isTest static void testAccess() {
-        Id p = [SELECT Id FROM profile WHERE name = 'Standard User'].Id;
-        User u = new User(
-        	Alias = 'testu',
-        	Email = 'test@example.com',
-        	EmailEncodingKey = 'UTF-8',
-        	LastName = 'Test',
-        	LanguageLocaleKey = 'en_US',
-            LocaleSidKey = 'en_US',
-        	TimeZonesidKey = 'America/Los_Angeles',
-        	ProfileId = p,
-        	UserName = 'test@SGexample.com',
-        	IsActive = true);
-        insert u;
-        
-        system.runAs(u) {
-            
-            try {
-                TakeAttendanceController.checkRegistrationsReadAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkRegistrationsFieldReadAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkRegistrationsDeleteAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkProgramSessionReadAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkProgramSessionFieldReadAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkProgramSessionCreateAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkProgramSessionUpdateAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkProgramSessionFieldUpdateAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkAttendanceCreateAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkAttendanceReadAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkAttendanceFieldReadAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkAttendanceUpdateAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkAttendanceFieldUpdateAccess();
-                } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-            
-            try {
-                TakeAttendanceController.checkAttendanceDeleteAccess();
-            } catch(Exception e) {
-                System.assert(e.getTypeName().contains('System.NoAccessException'));
-            }
-        }
-    }
     
-   
     //Data creation methods -----------------------------------------------------------------
     
     static List<Contact> makeContacts() {

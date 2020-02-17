@@ -2,12 +2,16 @@
 	doInit : function(component, event, helper) {
         console.log('Starting doInit');
         helper.checkBrowser(component);
-        helper.getProgramSessionDate(component, event);
         helper.getSessionForEdit(component, event);
         
-	},
+    },
+    
+    spinnerDisplayHandler : function(component, event, helper) {
+        helper.showHideSpinner(component); 
+    },
     
     addSelected: function(component, event, helper) {
+        component.set("v.showSpinner", true);
         //create array for temporary storage of Ids of checked participants
     	var tempIDs = [];
         
@@ -28,9 +32,7 @@
             
             console.log(tempIDs);
             helper.saveEdited(component, event, tempIDs);      
-            //navigate back to Attendance related list and refresh
-        //    helper.redirect(component.get("v.recordId"));
-        //    window.location.reload(true);
+            
         }
     },
         
