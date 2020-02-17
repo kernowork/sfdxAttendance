@@ -5,6 +5,11 @@
     <aura:attribute name="numRegs" type="Integer" />
     <aura:attribute name="months" type="Integer" default="6"/>
     <aura:attribute name="mobileView" type="boolean" default="true"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+
+    <aura:handler name="change" value="{!v.showSpinner}" action="{!c.spinnerDisplayHandler}"/>
+
+    <lightning:spinner aura:id="spinner" variant="brand" size="large" alternativeText="Working..." class="slds-hide"/>
     
     <div class="{!$Browser.formFactor}">
         <div class="slds-m-around_x-small">                        

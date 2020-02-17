@@ -4,6 +4,10 @@
         helper.checkBrowser(component);
         helper.getRegistrations(component);                   
     },
+
+    spinnerDisplayHandler : function(component, event, helper) {
+        helper.showHideSpinner(component); 
+    },
     
     showRegs : function(component, event, helper) {
         helper.checkInput(component);
@@ -19,17 +23,24 @@
         
         //save the ones that are checked
         if(getAllId != null) {
-            if (!Array.isArray(getAllId) && (getAllId).get("v.value") == true) {
-                tempIDs.push(getAllId.get("v.text"));
+            component.set("v.showSpinner", true);
+            if (!Array.isArray(getAllId) && (getAllId).get("v.checked") == true) {
+                tempIDs.push(getAllId.get("v.value"));
             } else {
                 for (var i=0; i < getAllId.length; i++) {
-                    if (getAllId[i].get("v.value") == true) {
-                        tempIDs.push(getAllId[i].get("v.text"));
+                    if (getAllId[i].get("v.checked") == true) {
+                        tempIDs.push(getAllId[i].get("v.value"));
                     }
                 } 
             }
             helper.deleteChecked(component, event, tempIDs);
-            $A.get('e.force:refreshView').fire();
+        } else {
+            var resultsToast = $A.get("e.force:showToast");
+                resultsToast.setParams({
+                    "title": "No registrations selected",
+                    "message": "Refresh Look Back List with smaller month value."
+                })
+                resultsToast.fire();
         }
     },
 })

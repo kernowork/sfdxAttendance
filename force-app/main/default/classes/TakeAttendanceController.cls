@@ -58,7 +58,7 @@ public with sharing class TakeAttendanceController {
         dsr = Program_Registration__c.sObjectType.getDescribe();
         accessFields = new String []  {'Id','Contact_Name__c','Contact__c', 'Contact_Phone__c'}; 
         CrudMethods.checkFieldReadAccess(dsr, accessFields);
-        CrudMethods.checkDeleteAccess('Program_Attendance__c');
+        CrudMethods.checkObjectDeleteAccess('Program_Attendance__c');
         
         Program_Session__c programSession = getProgramSession(sd); //which class session is this?
         List<Program_Attendance__c> attendances = getAttendances(programSession.Program__c, sd);  //get attendances for session

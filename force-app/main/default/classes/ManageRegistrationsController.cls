@@ -2,10 +2,20 @@ public with sharing class ManageRegistrationsController {
             
     @AuraEnabled
     public static List<Program_Registration__c> showRegistrations(Id programID, Integer nMonths) {
-        
-        checkContactsReadAccess();
-        checkRegistrationsReadAccess();
-        checkAttendanceReadAccess();
+        Schema.DescribeSObjectResult dsr;
+        String [] accessFields;
+
+        dsr = Contact.sObjectType.getDescribe();
+        accessFields = new String []  {'Id','FirstName','LastName'};
+        CrudMethods.checkFieldReadAccess(dsr, accessFields);
+
+        dsr = Program_Registration__c.sObjectType.getDescribe();
+        accessFields = new String []  {'Id','Name','Contact_Name__c', 'Contact_Phone__c', 'Contact__c', 'CreatedDate'};   
+        CrudMethods.checkFieldReadAccess(dsr, accessFields);
+
+        dsr = Program_Attendance__c.sObjectType.getDescribe();
+        accessFields = new String []  {'Id', 'Name', 'ServiceDate__c'};     
+        CrudMethods.checkFieldReadAccess(dsr, accessFields);
         
         List<Program_Registration__c> regsToDelete;
         List<Program_Registration__c> regsCheck;
@@ -94,8 +104,11 @@ public with sharing class ManageRegistrationsController {
     @AuraEnabled
     public static boolean deleteRegs(List<Id> regIDs){
         // this happens when the user clicks on the Delete Registrations button
+        System.debug('deleteRegs ' + regIDs);
+        crudMethods.checkObjectDeleteAccess('Program_Registration__c');
+        System.debug('passed CRUD');
+
         boolean regsDeleted = false;
-        checkRegistrationsDeleteAccess();
         List<Program_Registration__c> regsToDelete;
 
         if(regIDs.size() > 0) {           	
@@ -114,72 +127,72 @@ public with sharing class ManageRegistrationsController {
     
     //********************************** CRUD methods ***********************************
     
-    public static void checkContactsReadAccess() {
-        if (!Schema.sObjectType.Contact.isAccessible()) {
-            throw new System.NoAccessException();
-        }
+    // public static void checkContactsReadAccess() {
+    //     if (!Schema.sObjectType.Contact.isAccessible()) {
+    //         throw new System.NoAccessException();
+    //     }
         
-        checkContactsFieldReadAccess();
-    }
+    //     checkContactsFieldReadAccess();
+    // }
     
-    public static void checkContactsFieldReadAccess() {
+    // public static void checkContactsFieldReadAccess() {
         
-        String [] regAccessFields = new String []  {'Id','FirstName','LastName'};                                                        
-        Map<String, Schema.SOBjectField> m = Schema.SOBjectType.Contact.fields.getMap();
-        System.debug(m);
-        for (String fieldToCheck : regAccessFields) {
-            if (!m.get(fieldToCheck).getDescribe().isAccessible()) {
-                throw new System.NoAccessException();
-            }
-        }
-    }
+    //     String [] regAccessFields = new String []  {'Id','FirstName','LastName'};                                                        
+    //     Map<String, Schema.SOBjectField> m = Schema.SOBjectType.Contact.fields.getMap();
+    //     System.debug(m);
+    //     for (String fieldToCheck : regAccessFields) {
+    //         if (!m.get(fieldToCheck).getDescribe().isAccessible()) {
+    //             throw new System.NoAccessException();
+    //         }
+    //     }
+    // }
     
-    public static void checkRegistrationsReadAccess() {
+    // public static void checkRegistrationsReadAccess() {
         
-        if (!Schema.sObjectType.Program_Registration__c.isAccessible()) {
-            throw new System.NoAccessException();
-        }
+    //     if (!Schema.sObjectType.Program_Registration__c.isAccessible()) {
+    //         throw new System.NoAccessException();
+    //     }
         
-        checkRegistrationsFieldReadAccess();
-    }
+    //     checkRegistrationsFieldReadAccess();
+    // }
     
-    public static void checkRegistrationsFieldReadAccess() {
+    // public static void checkRegistrationsFieldReadAccess() {
         
-        String [] regAccessFields = new String []  {'Id','Name','Contact_Name__c', 'Contact_Phone__c', 'Contact__c', 'CreatedDate'};                                                        
-        Map<String, Schema.SOBjectField> m = Schema.SOBjectType.Program_Registration__c.fields.getMap();
-        System.debug(m);
-        for (String fieldToCheck : regAccessFields) {
-            if (!m.get(fieldToCheck).getDescribe().isAccessible()) {
-                System.debug('User cannot read Registrations');
-                throw new System.NoAccessException();
-            }
-        }
-    }
+    //     String [] regAccessFields = new String []  {'Id','Name','Contact_Name__c', 'Contact_Phone__c', 'Contact__c', 'CreatedDate'};                                                        
+    //     Map<String, Schema.SOBjectField> m = Schema.SOBjectType.Program_Registration__c.fields.getMap();
+    //     System.debug(m);
+    //     for (String fieldToCheck : regAccessFields) {
+    //         if (!m.get(fieldToCheck).getDescribe().isAccessible()) {
+    //             System.debug('User cannot read Registrations');
+    //             throw new System.NoAccessException();
+    //         }
+    //     }
+    // }
     
     
-    public static void checkRegistrationsDeleteAccess() {
-        if (!Schema.sObjectType.Program_Registration__c.isDeletable()) {
-            throw new System.NoAccessException();   
-        }
-    }
+    // public static void checkRegistrationsDeleteAccess() {
+    //     if (!Schema.sObjectType.Program_Registration__c.isDeletable()) {
+    //         throw new System.NoAccessException();   
+    //     }
+    // }
     
-    public static void checkAttendanceReadAccess() {
+    // public static void checkAttendanceReadAccess() {
         
-        if (!Schema.sObjectType.Program_Attendance__c.isAccessible()) {
-            throw new System.NoAccessException();
-        }       
-        checkAttendanceFieldReadAccess();
-    }
+    //     if (!Schema.sObjectType.Program_Attendance__c.isAccessible()) {
+    //         throw new System.NoAccessException();
+    //     }       
+    //     checkAttendanceFieldReadAccess();
+    // }
     
-	public static void checkAttendanceFieldReadAccess() {   
+	// public static void checkAttendanceFieldReadAccess() {   
         
-        String [] attAccessFields = new String []  {'Id', 'Name', 'ServiceDate__c'};                                                
-        Map<String, Schema.SOBjectField> mm = Schema.SOBjectType.Program_Attendance__c.fields.getMap();
-        for (String fieldToCheck : attAccessFields) {
-            if (!mm.get(fieldToCheck).getDescribe().isAccessible()) {
-                throw new System.NoAccessException();
-            }
-        }
-    }
+    //     String [] attAccessFields = new String []  {'Id', 'Name', 'ServiceDate__c'};                                                
+    //     Map<String, Schema.SOBjectField> mm = Schema.SOBjectType.Program_Attendance__c.fields.getMap();
+    //     for (String fieldToCheck : attAccessFields) {
+    //         if (!mm.get(fieldToCheck).getDescribe().isAccessible()) {
+    //             throw new System.NoAccessException();
+    //         }
+    //     }
+    // }
 
 }

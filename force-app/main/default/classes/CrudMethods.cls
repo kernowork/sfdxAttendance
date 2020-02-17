@@ -48,7 +48,7 @@ public with sharing class CrudMethods {
     }
 
 
-    public static void checkDeleteAccess(String type) {
+    public static void checkObjectDeleteAccess(String type) {
         String[] types = new String[]{};
         types.add(type);
         Schema.DescribeSobjectResult[] results = Schema.describeSObjects(types);

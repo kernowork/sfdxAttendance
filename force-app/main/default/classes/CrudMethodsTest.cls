@@ -120,15 +120,15 @@ private class CrudMethodsTest {
    
 
     @isTest
-    private static void testCheckDeleteAccess() {
+    private static void testCheckObjectDeleteAccess() {
         Boolean noAccess = false;
-        CrudMethods.checkDeleteAccess('Program__c');
+        CrudMethods.checkObjectDeleteAccess('Program__c');
         System.assertEquals(false, noAccess);
 
         User u = [SELECT Id FROM User WHERE UserName = 'test@SGexample.com' LIMIT 1];
         system.runAs(u) {
             try {
-                CrudMethods.checkDeleteAccess('Program__c');
+                CrudMethods.checkObjectDeleteAccess('Program__c');
             } catch(Exception e) {
                 System.assert(e.getTypeName().contains('System.NoAccessException'));
                 noAccess = true;
