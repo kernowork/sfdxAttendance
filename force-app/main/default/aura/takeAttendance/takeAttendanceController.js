@@ -11,7 +11,6 @@
     },
     
     addSelected: function(component, event, helper) {
-        component.set("v.showSpinner", true);
         //create array for temporary storage of Ids of checked participants
     	var tempIDs = [];
         
@@ -20,6 +19,7 @@
         
         //save the ones that are checked
         if(getAllId != null) {
+            component.set("v.showSpinner", true);
             if (!Array.isArray(getAllId) && (getAllId).get("v.checked") == true) {
                 tempIDs.push(getAllId.get("v.value"));  //in the unlikely case there is only one entry in the form!
             } else {
@@ -31,8 +31,7 @@
             }
             
             console.log(tempIDs);
-            helper.saveEdited(component, event, tempIDs);      
-            
+            helper.saveEdited(component, event, tempIDs);        
         }
     },
         

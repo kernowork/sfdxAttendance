@@ -32,12 +32,11 @@
                 console.log('NO GOOD!');
                 var resultsToast = $A.get("e.force:showToast");
                 resultsToast.setParams({
-                    "title": "Getting Program Registrations",
-                    "message": "Insufficient access privileges for this action."
+                    "title": "Program Registrations not loaded",
+                    "message": "Unable to complete this action."
                 })
                 
                 resultsToast.fire();
-                $A.get("e.force:closeQuickAction").fire();
         	}
     	});
         
@@ -56,27 +55,30 @@
             var state = response.getState();
             if (state === "SUCCESS") {
                 console.log('SUCCESS');
-                console.log('Response: '+ response.getReturnValue());               
-         		$A.get('e.force:refreshView').fire();
+                console.log('Response: '+ response.getReturnValue());       
                 var resultsToast = $A.get("e.force:showToast");
                 resultsToast.setParams({
                     "title": "Saving/updating Attendances",
                     "message": "Attendance records have been saved/updated for this session."
                 })
+                component.set("v.showSpinner", false);
+                resultsToast.fire();
+                $A.get("e.force:closeQuickAction").fire();
             } else {
                 console.log('NO GOOD');
                 var resultsToast = $A.get("e.force:showToast");
                 resultsToast.setParams({
-                    "title": "Saving/updating Attendances",
-                    "message": "Insufficient access privileges for this action."
+                    "title": "Attendance not saved",
+                    "message": "Unable to complete this action."
                 })
+                component.set("v.showSpinner", false);
+                resultsToast.fire();
+                $A.get("e.force:closeQuickAction").fire();
             }
         });
         $A.enqueueAction(action);
 
-        component.set("v.showSpinner", false);
-        resultsToast.fire();
-        $A.get("e.force:closeQuickAction").fire();
+        
     },
     
     
