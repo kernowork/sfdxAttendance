@@ -1,0 +1,105 @@
+<aura:component controller="MultiSessionAttendance" implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction">
+    <aura:attribute name="programName" type="String" />
+    <aura:attribute name="dates" type="String[]" />
+    <aura:attribute name="date1" type="Date" />
+    <aura:attribute name="date2" type="Date" />
+    <aura:attribute name="registrantList" type="List" />
+    <aura:attribute name="loaded" type="Boolean" default="false" />
+    <aura:attribute name="startOver" type="Boolean" default="true" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+
+    <aura:handler name="change" value="{!v.showSpinner}" action="{!c.spinnerDisplayHandler}"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:html tag="style">
+        .slds-modal__container {
+        min-width: 90vw;
+        }       
+    </aura:html>  
+
+    <lightning:card>
+        <p style="font-size: 16px; font-weight: bold;">{!v.programName}</p>
+        <p>Enter attendance for up to 10 sessions</p><br/>
+        <aura:if isTrue="{!v.startOver}">
+            <div class="slds-m-around_x-small">
+                <div class="slds-grid slds-gutters_medium slds-grid--vertical-align-end">
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning:input type="date" aura:id="date1" label="Start Date" value="{!v.date1}" />
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning:input type="date" aura:id="date2" label="End Date" value="{!v.date2}" />
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <lightning:button aura:id="submit1" type="submit" label="Get Session Dates" onclick="{! c.loadForm }" />
+                    </div>
+                </div>
+            </div>
+        </aura:if>
+
+        <lightning:spinner aura:id="spinner" variant="brand" size="large" alternativeText="Working..." class="slds-hide"/>
+
+        <aura:if isTrue="{!and(not(empty(v.registrantList)), v.loaded)}">
+
+            <div class="slds-grid slds-grid_align-end slds-m-around_x-small">
+                <div class="slds-m-around_x-small">
+                    <lightning:button variant="brand" label="Save Attendance" onclick="{!c.addSelected}"/>
+                </div>
+                <div class="slds-m-around_x-small">
+                    <lightning:button variant="neutral" label="Start Over" onclick="{!c.startOver}"/>
+                </div>
+            </div>
+
+            <table class="slds-table slds-table-bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+                <thead>
+                    <tr class="slds-text-heading_label">
+                        <th scope="col" style="width: 15%;">
+                            <div class="slds-truncate" title="Name">Name</div>
+                        </th>
+                        <th scope="col" style="width: 10%;">
+                            <div class="slds-truncate" title="Select">Phone #</div>
+                        </th>
+                        <aura:iteration items="{!v.dates}" var="d">
+                            <th scope="col">
+                                <div style="text-align: center;">
+                                    <div class="slds-truncate" title="{!d}">{!d}</div>
+                                </div>
+                            </th>
+                        </aura:iteration>
+                    </tr>
+                </thead>
+
+                <aura:iteration items="{!v.registrantList}" var="reg">
+                    <tr>
+                        <td>
+                            <div class="slds-truncate" title="{!reg.ContactName}">{!reg.ContactName}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate" title="{!reg.ContactPhone}">{!reg.ContactPhone}</div>
+                        </td>
+                        <aura:iteration items="{!reg.CheckboxSettings}" var="box" indexVar="index">
+                            <td>
+                                <div style="text-align: center;">
+                                    <lightning:input type="checkbox" aura:id="checkBox" name="{!index}" value="{!reg.RegistrationId}"
+                                        checked="{!box}" />
+                                </div>
+                            </td>
+                        </aura:iteration>
+                    </tr>
+                </aura:iteration>
+
+            </table>
+
+            <div class="slds-grid slds-grid_align-end slds-m-around_x-small">
+                <div class="slds-m-around_x-small">
+                    <lightning:button variant="brand" label="Save Attendance" onclick="{!c.addSelected}"/>
+                </div>
+                <div class="slds-m-around_x-small">
+                    <lightning:button variant="neutral" label="Start Over" onclick="{!c.startOver}"/>
+                </div>
+            </div>
+            
+        </aura:if>
+
+    </lightning:card>
+</aura:component>
