@@ -233,6 +233,10 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
+        <tab>Program_Utilities</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>Program__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>

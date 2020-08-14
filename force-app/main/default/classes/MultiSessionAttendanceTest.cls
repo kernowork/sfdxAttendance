@@ -34,10 +34,6 @@ private class MultiSessionAttendanceTest {
 
         List<Contact> conList = makeContacts();
         List<Program_Registration__c> regList = makeRegistrations(conList, program);
-        // List<String> regIds = new List<String>();
-        // for (Integer i = 0; i<5; i++) {
-        //     regIds.add(regList[i].Id);
-        // }
 
         Program_Session__c session1 = new Program_Session__c(Program__c=program.Id, Date__c=date.newInstance(2020,02,10));
         insert session1;

@@ -58,8 +58,8 @@
     <navType>Standard</navType>
     <setupExperience>all</setupExperience>
     <tabs>standard-home</tabs>
-    <tabs>Program_Utilities</tabs>
     <tabs>Program__c</tabs>
+    <tabs>Program_Utilities</tabs>
     <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
     <tabs>standard-Dashboard</tabs>

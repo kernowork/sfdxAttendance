@@ -52,7 +52,7 @@
     </flexiPageRegions>
     <flexiPageRegions>
         <componentInstances>
-            <componentName>takeAttendance</componentName>
+            <componentName>TakeAttendance</componentName>
         </componentInstances>
         <name>Facet-457b979a-bfd1-489f-850b-be71e5d7dc06</name>
         <type>Facet</type>
